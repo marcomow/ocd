@@ -8,7 +8,17 @@
     <app-header></app-header>
     <main>main</main>
     <footer>footer</footer>
-  </body>
+    
+    <script>
+class AppHeader extends HTMLHeader{
+  constructor(){
+    
+    console.log(this.constructor.name) ;
+  
+  }
+}
+customElements.define('app-header',AppHeader,{extends:'header'})
+</script>  </body>
 </html>
 
 
