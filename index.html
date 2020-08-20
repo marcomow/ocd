@@ -7,9 +7,7 @@
     <link rel="icon" href="https://marcomow.github.io/ocd/Logo_OCD.png" sizes="any" type="image/png">     
     
     <link rel='manifest' href='manifest.json'>
-    
-    <script src="service-worker.js"></script>
-    
+        
     <link href="https://marcomow.github.io/ocd/tailwind.css" rel="stylesheet">
     <style>
  
@@ -233,7 +231,14 @@ class AppFooter extends AppElement{
 }
 customElements.define('app-footer',AppFooter) ;
 </script>    
-        
+        <script>    
+    if ('serviceWorker' in navigator) {
+    
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    }
+</script>
   </body>
 </html>
 
