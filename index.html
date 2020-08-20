@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html class="w-full h-full text-white">
+<html class="w-full h-full text-normal">
   <head>
     <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="icon" href="https://marcomow.github.io/ocd/Logo_OCD.png" sizes="any" type="image/png">     
+    
     <link href="https://marcomow.github.io/ocd/tailwind.css" rel="stylesheet">
     <style>
  
@@ -13,9 +17,9 @@
 }
 </style>  </head>
   <body class="grid grid-rows-12 w-full h-full">
-    <app-header class="row-span-1">header</app-header>
-    <app-main class="row-span-10">main</app-main>
-    <app-footer class="row-span-1">footer</app-footer>
+    <app-header class="row-span-1"></app-header>
+    <app-main class="row-span-10"></app-main>
+    <app-footer class="row-span-1"></app-footer>
     
         
     <script>
@@ -41,8 +45,6 @@ class AppView extends AppElement{
   connectedCallback(){
     
     this.innerHTML = '' ;
-    
-    this.classList.add('grid');
     
     const that = this ;
     
@@ -94,6 +96,8 @@ class AppSection extends AppView{
     
   }
   connectedCallback_(){
+    
+    this.classList.add('grid');
     
     const that = this ;
 
@@ -153,12 +157,33 @@ class AppPage extends AppView{
     
   }
   connectedCallback_(){
+  
+    this.classList.add('flex','flex-wrap','h-full','overflow-hidden');
     
-    const asds = this.insertAdjacentHTML('beforeend',this.json.html) ; console.log(asds);
+    const element_content = document.createElement('app-page-content');
+    
+    element_content.html = this.json.html ;
+    
+    this.appendChild(element_content) ;
   
   }
 }
 customElements.define('app-page',AppPage);
+</script>
+<script>
+class AppPageContent extends AppElement {
+  constructor(){
+    super(...arguments);
+  }
+  connectedCallback(){
+    
+    this.classList.add('overflow-auto','p-4','pt-8','h-full');
+    
+    this.innerHTML = this.html ;
+  
+  }
+}
+customElements.define('app-page-content',AppPageContent);
 </script>    
         
     <script>
@@ -186,6 +211,8 @@ class AppMain extends AppElement{
   connectedCallback(){
     
     const element_view = AppView.show('root','section');
+    
+    this.classList.add('overflow-hidden');
     
   }
 }
