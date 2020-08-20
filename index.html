@@ -1,25 +1,208 @@
 <!DOCTYPE html>
-<html>
+<html class="w-full h-full text-white">
   <head>
     <base target="_top">
-    <link ref="stylesheet" href="tailwind.css">
-  </head>
-  <body class="grid">
-    <header is="app-header">header</header>
-    <main>main</main>
-    <footer>footer</footer>
+    <link href="https://marcomow.github.io/ocd/tailwind.css" rel="stylesheet">
+    <style>
+ 
+.grid-rows-12 {
+    grid-template-rows: repeat(12,minmax(0,1fr));
+}
+.row-span-10 {
+    grid-row: span 10/span 10;
+}
+</style>  </head>
+  <body class="grid grid-rows-12 w-full h-full">
+    <app-header class="row-span-1">header</app-header>
+    <app-main class="row-span-10">main</app-main>
+    <app-footer class="row-span-1">footer</app-footer>
     
-    
+        
     <script>
-class AppHeader extends HTMLHeaderElement{
+class AppElement extends HTMLElement{
   constructor(){
-    
-    console.log(this.constructor.name) ;
+    super(...arguments);
   
   }
 }
-customElements.define('app-header',AppHeader,{extends:'header'})
 </script>    
+        
+    <script>
+class AppView extends AppElement{
+  constructor(){
+    super(...arguments);   
+  
+    const element_main = document.querySelector('app-main');
+    
+    element_main.innerHTML = '' ;
+    
+        
+  }
+  connectedCallback(){
+    
+    this.innerHTML = '' ;
+    
+    this.classList.add('grid');
+    
+    const that = this ;
+    
+    this.json?.array_contents
+    .forEach(object_element=>{
+    
+      AppSectionItem.show(object_element,that) ;
+    
+    })
+    ;
+  
+    this.connectedCallback_();
+  
+  }
+  static async show(id_view,type_view){ 
+    
+    let element_view ;
+    
+    try { element_view = document.querySelector('#'+id_view); }
+    catch(error){}
+    
+    const json = await fetch('https://marcomow.github.io/ocd/' + id_view + '.json')
+    .then(response => response.json())
+    .then(data => data);
+        
+    if(!element_view){ 
+      
+      element_view = document.createElement('app-'+type_view);
+      
+      element_view.id = id_view ;
+      
+      element_view.json = json ;
+      
+    }
+    
+    document.querySelector('app-main').appendChild(element_view) ;  
+    
+    return element_view;
+  }
+}
+customElements.define('app-view',AppView);
+</script>
+    
+        
+    <script>
+class AppSection extends AppView{
+  constructor(){
+    super(...arguments);
+    
+  }
+  connectedCallback_(){
+    
+    const that = this ;
+
+      
+  }
+}
+customElements.define('app-section',AppSection);
+</script>
+<script>
+class AppSectionItem extends AppElement {
+  constructor(){
+    super(...arguments);
+    
+  }
+  connectedCallback(){ 
+    
+    this.classList.add('w-full','p-4','border');
+        
+    this.innerHTML = this.name ;
+    
+    const that = this ; 
+    
+    this.addEventListener('click',()=>{AppView.show(that.object_element.id,that.object_element.type);});
+    
+  }
+  static show(object_element,element_parent){
+    
+    const id_element = 'item-'+object_element.id
+    
+    let element_section_item = element_parent.querySelector('#'+id_element);
+    
+    if(!element_section_item){ 
+      
+      element_section_item = document.createElement('app-section-item');
+      
+      element_section_item.id = id_element ;
+      
+      element_section_item.name = object_element.name ;
+      
+      element_section_item.object_element = object_element ;
+      
+    }
+    
+    element_parent.appendChild(element_section_item) ;  
+    
+    return element_section_item;
+  
+  }
+}
+customElements.define('app-section-item',AppSectionItem);
+</script>    
+        
+    <script>
+class AppPage extends AppView{
+  constructor(){
+    super(...arguments);
+    
+  }
+  connectedCallback_(){
+    
+    const asds = this.insertAdjacentHTML('beforeend',this.json.html) ; console.log(asds);
+  
+  }
+}
+customElements.define('app-page',AppPage);
+</script>    
+        
+    <script>
+class AppHeader extends AppElement{
+  constructor(){
+    super(...arguments);
+    
+  }
+}
+customElements.define('app-header',AppHeader) ;
+</script>    
+        
+    <script defer async>
+class AppMain extends AppElement{
+  constructor(){
+    super(...arguments);
+    
+    const element_view = document.createElement('app-section');
+    
+    this.innerHTML = '';
+    
+    this.appendChild(element_view);
+  
+  }
+  connectedCallback(){
+    
+    const element_view = AppView.show('root','section');
+    
+  }
+}
+customElements.define('app-main',AppMain) ;
+</script>    
+        
+    <script>
+class AppFooter extends AppElement{
+  constructor(){
+    super(...arguments);
+    
+  
+  }
+}
+customElements.define('app-footer',AppFooter) ;
+</script>    
+        
   </body>
 </html>
 
