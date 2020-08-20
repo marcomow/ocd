@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="w-full h-full text-normal">
+<html class="w-screen h-screen select-none bg-gray-900 light-mode:bg-white text-gray-200">
   <head>
     <base target="_top">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,11 +17,24 @@
 .row-span-10 {
     grid-row: span 10/span 10;
 }
+.row-span-12 {
+    grid-row: span 12/span 12;
+}
+</style>
+<style>
+ 
+html { 
+  background: url(https://marcomow.github.io/ocd/Logo_OCD.png) no-repeat center center fixed; 
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain;
+  background-size: contain;
+}
 </style>  </head>
-  <body class="grid grid-rows-12 w-full h-full">
-    <app-header class="row-span-1"></app-header>
-    <app-main class="row-span-10"></app-main>
-    <app-footer class="row-span-1"></app-footer>
+  <body class="grid grid-rows-12 w-screen h-screen">
+   
+    <app-main class="row-span-12"></app-main>
+   
     
         
     <script>
@@ -107,8 +120,9 @@ class AppSection extends AppView{
   }
 }
 customElements.define('app-section',AppSection);
-</script>
-<script>
+</script>    
+        
+    <script>
 class AppSectionItem extends AppElement {
   constructor(){
     super(...arguments);
@@ -116,13 +130,19 @@ class AppSectionItem extends AppElement {
   }
   connectedCallback(){ 
     
-    this.classList.add('w-full','p-4','border');
+    this.classList.add('w-full','p-4','border','focus:bg-blue-100','bg-gray-900','light-mode:bg-white','bg-opacity-75');
         
     this.innerHTML = this.name ;
     
     const that = this ; 
     
-    this.addEventListener('click',()=>{AppView.show(that.object_element.id,that.object_element.type);});
+    this.addEventListener('click',()=>{
+      
+      navigator.vibrate(100);
+      
+      AppView.show(that.object_element.id,that.object_element.type);
+      
+    });
     
   }
   static show(object_element,element_parent){
@@ -179,9 +199,67 @@ class AppPageContent extends AppElement {
   }
   connectedCallback(){
     
-    this.classList.add('overflow-auto','p-4','pt-8','h-full');
+    this.classList.add('overflow-auto','p-4','pt-8','h-full','bg-gray-900','light-mode:bg-white','bg-opacity-75');
+    
+    this.style['scroll-snap-type'] = 'y mandatory';
     
     this.innerHTML = this.html ;
+    
+    const fix_css = (element_style)=>{
+    
+      const array_properties_accepted = ['color','font-weight','font-size'];
+      
+      const array_values_forbidden = [
+      {name:'color',value:'#000000'}
+      ];
+      
+      const text_raw = element_style.innerHTML;
+      
+      const text_fixed = text_raw.split('}')
+      .map(segment_rule=>{
+        
+        if(!segment_rule.includes('{')){ return segment_rule; }
+        
+        const rule_prefix = segment_rule.split('{')[0];
+        
+        const rule_content_raw = segment_rule.split('{')[1];
+        
+        const rule_content_fixed = rule_content_raw.split(';')
+        .filter(property=>{
+                    
+          const name_property = property.split(':')[0];
+          
+          if(!array_properties_accepted.includes(name_property)){ return false ; }
+          
+          const object_forbidden = array_values_forbidden.find(obj=>obj.name===name_property) ; 
+          
+          if(!object_forbidden){ return true ;}
+          
+          const value_property = property.split(':')[1].trim() ;
+          
+          return object_forbidden.value !== value_property ;
+        
+        })
+        .join(';')
+        ;
+        
+        return rule_prefix + '{' + rule_content_fixed ; 
+              
+      })
+      .join('}');
+      
+      element_style.innerHTML = text_fixed ;
+    
+    }
+    
+    Array.from(this.querySelectorAll('style')).forEach(fix_css);
+    
+    Array.from(this.querySelectorAll('p')).forEach(element=>{
+      element.style['scroll-snap-align']='start';
+      
+      element.classList.add('p-2');
+      
+      });
   
   }
 }
@@ -198,7 +276,7 @@ class AppHeader extends AppElement{
 customElements.define('app-header',AppHeader) ;
 </script>    
         
-    <script defer async>
+    <script>
 class AppMain extends AppElement{
   constructor(){
     super(...arguments);
