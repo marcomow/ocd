@@ -112,7 +112,7 @@ class AppSection extends AppView{
   }
   connectedCallback_(){
     
-    this.classList.add('grid');
+    this.classList.add('grid','w-full');
     
     const that = this ;
 
@@ -199,7 +199,7 @@ class AppPageContent extends AppElement {
   }
   connectedCallback(){
     
-    this.classList.add('overflow-auto','p-4','pt-8','h-full','bg-gray-900','light-mode:bg-white','bg-opacity-75');
+    this.classList.add('w-full','overflow-auto','p-4','pt-8','h-full','bg-gray-900','light-mode:bg-white','bg-opacity-75');
     
     this.style['scroll-snap-type'] = 'y mandatory';
     
