@@ -309,14 +309,7 @@ class AppFooter extends AppElement{
 }
 customElements.define('app-footer',AppFooter) ;
 </script>    
-        <script>    
-    if ('serviceWorker' in navigator) {
-    
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js');
-      });
-    }
-</script>
+        <script type="module" src="/service-worker.js"></script>
   </body>
 </html>
 
