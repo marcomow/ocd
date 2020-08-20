@@ -4,7 +4,7 @@
     "name": "OCDapp",
     "short_name": "OCDapp",
     "scope": "/ocd/index.html",
-    "display": "browser",
+    "display": "standalone",
     "start_url": "https://marcomow.github.io/ocd/index.html",
     "background_color": "transparent",
     "theme_color": "transparent",
