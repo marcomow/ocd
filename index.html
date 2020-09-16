@@ -24,7 +24,7 @@
 <style>
  
 html { 
-  background: url(https://marcomow.github.io/ocd/Logo_OCD.png) no-repeat center center fixed; 
+  background: url(https://marcomow.github.io/ocd/Logo_OCDs.png) no-repeat center center fixed; 
   -webkit-background-size: contain;
   -moz-background-size: contain;
   -o-background-size: contain;
@@ -57,16 +57,17 @@ class AppView extends AppElement{
     
         
   }
-  connectedCallback(){
+  connectedCallback(){ 
     
-    this.innerHTML = '' ;
+    this.innerHTML = '' ; 
     
-    const that = this ;
+    const that = this ;  
     
-    this.json?.array_contents
-    .forEach(object_element=>{
+    console.log(this.json?.array_contents);
     
-      AppSectionItem.show(object_element,that) ;
+    this.json?.array_contents?.forEach?.(object_element=>{ 
+    
+      AppViewSectionItem.show(object_element,that) ;
     
     })
     ;
@@ -74,7 +75,7 @@ class AppView extends AppElement{
     this.connectedCallback_();
   
   }
-  static async show(id_view,type_view){ 
+  static async show(id_view,type_view,id_origin){ 
     
     let element_view ;
     
@@ -88,6 +89,8 @@ class AppView extends AppElement{
     if(!element_view){ 
       
       element_view = document.createElement('app-'+type_view);
+      
+      element_view.id_origin = id_origin ;
       
       element_view.id = id_view ;
       
@@ -105,7 +108,7 @@ customElements.define('app-view',AppView);
     
         
     <script>
-class AppSection extends AppView{
+class AppViewSection extends AppView{
   constructor(){
     super(...arguments);
     
@@ -119,11 +122,11 @@ class AppSection extends AppView{
       
   }
 }
-customElements.define('app-section',AppSection);
+customElements.define('app-section',AppViewSection);
 </script>    
         
     <script>
-class AppSectionItem extends AppElement {
+class AppViewSectionItem extends AppElement {
   constructor(){
     super(...arguments);
     
@@ -132,7 +135,7 @@ class AppSectionItem extends AppElement {
     
     this.classList.add('w-full','p-4','border','focus:bg-blue-100','bg-gray-900','light-mode:bg-white','bg-opacity-75');
         
-    this.innerHTML = this.name ;
+    this.innerHTML = this.name === 'button_back' ? '?' : this.name ;
     
     const that = this ; 
     
@@ -140,7 +143,7 @@ class AppSectionItem extends AppElement {
       
       navigator.vibrate(1);
       
-      AppView.show(that.object_element.id,that.object_element.type);
+      AppView.show(that.object_element.id,that.object_element.type,that.id_origin);
       
     });
     
@@ -151,17 +154,15 @@ class AppSectionItem extends AppElement {
     
     let element_section_item = element_parent.querySelector('#'+id_element);
     
-    if(!element_section_item){ 
-      
-      element_section_item = document.createElement('app-section-item');
-      
-      element_section_item.id = id_element ;
-      
-      element_section_item.name = object_element.name ;
-      
-      element_section_item.object_element = object_element ;
-      
-    }
+    element_section_item = document.createElement('app-section-item');
+    
+    element_section_item.id = id_element ;
+    
+    element_section_item.name = object_element.name ;
+    
+    element_section_item.object_element = object_element ;
+    
+    element_section_item.id_origin = element_parent.id ; 
     
     element_parent.appendChild(element_section_item) ;  
     
@@ -169,11 +170,11 @@ class AppSectionItem extends AppElement {
   
   }
 }
-customElements.define('app-section-item',AppSectionItem);
+customElements.define('app-section-item',AppViewSectionItem);
 </script>    
         
     <script>
-class AppPage extends AppView{
+class AppViewPage extends AppView{
   constructor(){
     super(...arguments);
     
@@ -190,10 +191,10 @@ class AppPage extends AppView{
   
   }
 }
-customElements.define('app-page',AppPage);
+customElements.define('app-page',AppViewPage);
 </script>
 <script>
-class AppPageContent extends AppElement {
+class AppViewPageContent extends AppElement {
   constructor(){
     super(...arguments);
   }
@@ -205,55 +206,6 @@ class AppPageContent extends AppElement {
     
     this.innerHTML = this.html ;
     
-    const fix_css = (element_style)=>{
-    
-      const array_properties_accepted = ['color','font-weight','font-size'];
-      
-      const array_values_forbidden = [
-      {name:'color',value:'#000000'}
-      ];
-      
-      const text_raw = element_style.innerHTML;
-      
-      const text_fixed = text_raw.split('}')
-      .map(segment_rule=>{
-        
-        if(!segment_rule.includes('{')){ return segment_rule; }
-        
-        const rule_prefix = segment_rule.split('{')[0];
-        
-        const rule_content_raw = segment_rule.split('{')[1];
-        
-        const rule_content_fixed = rule_content_raw.split(';')
-        .filter(property=>{
-                    
-          const name_property = property.split(':')[0];
-          
-          if(!array_properties_accepted.includes(name_property)){ return false ; }
-          
-          const object_forbidden = array_values_forbidden.find(obj=>obj.name===name_property) ; 
-          
-          if(!object_forbidden){ return true ;}
-          
-          const value_property = property.split(':')[1].trim() ;
-          
-          return object_forbidden.value !== value_property ;
-        
-        })
-        .join(';')
-        ;
-        
-        return rule_prefix + '{' + rule_content_fixed ; 
-              
-      })
-      .join('}');
-      
-      element_style.innerHTML = text_fixed ;
-    
-    }
-    
-    Array.from(this.querySelectorAll('style')).forEach(fix_css);
-    
     Array.from(this.querySelectorAll('p')).forEach(element=>{
       element.style['scroll-snap-align']='start';
       
@@ -263,7 +215,7 @@ class AppPageContent extends AppElement {
   
   }
 }
-customElements.define('app-page-content',AppPageContent);
+customElements.define('app-page-content',AppViewPageContent);
 </script>    
         
     <script>
